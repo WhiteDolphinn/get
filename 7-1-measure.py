@@ -56,20 +56,25 @@ try:
 
     tm3 = time.time()
 
+    print("Начало эксперимента")
+
     for i in range(num_of_dots):
         value = adc2()
-        measured_data[i] = value*3.3/256
+        measured_data[i] = value
         print_in_leds_2bit(value)
         print(i, value, 3.3*value/256)
         #time.sleep(0.005)
 
         if value > 250:
             GPIO.output(troyka, 1)
+            print("Разрядка")
 
         if value == 62:
             GPIO.output(troyka, 0)
 
     measured_data_str = [str(item) for item in measured_data]
+
+    print("Запись в файл")
 
     with open("data.txt", "w") as outfile:
         outfile.write("\n".join(measured_data_str))
@@ -80,10 +85,12 @@ try:
         outfile.write("\n частота дискретизации ")
         outfile.write(str(3.3/256))
 
+    tm4 = time.time()
+
     plt.plot(measured_data)
     plt.show()
 
-    tm4 = time.time()
+
     print("time = ", tm4 - tm3)
     print("\n частота измерений ", 1/sleep_time)
     print("\n частота дискретизации", 3.3/256)
